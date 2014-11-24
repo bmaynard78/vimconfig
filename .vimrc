@@ -29,6 +29,7 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'kien/ctrlp.vim'
 Plugin 'elzr/vim-json'
+Plugin 'christoomey/vim-tmux-navigator'
 
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
