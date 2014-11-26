@@ -10,7 +10,6 @@ Plugin 'rodjek/vim-puppet'
 Plugin 'godlygeek/tabular'
 Plugin 'scrooloose/syntastic'
 Plugin 'tpope/vim-fugitive'
-Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'puppetlabs/puppet'
 Plugin 'scrooloose/nerdtree'
@@ -25,15 +24,27 @@ Plugin 'jlanzarotta/bufexplorer'
 Plugin 'mv/mv-vim-puppet'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'kien/ctrlp.vim'
 Plugin 'elzr/vim-json'
 Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'honza/vim-snipmate'
+Plugin 'ervandew/supertab'
+Plugin 'tpope/vim-haml'
+Plugin 'tpope/vim-git'
+Plugin 'tpope/vim-surround'
+Plugin 'tsaleh/vim-tmux'
 
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_enable_signs=1
+let g:syntastic_auto_loc_list=1
+let g:syntastic_quiet_messages = {'level': 'warnings'}
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
@@ -65,10 +76,13 @@ let g:tmuxline_preset = {
       \'y'    : ['%R', '%a', '%Y'],
       \'z'    : '#H'}
 
+set encoding=utf-8
+
 " Always show a status line
 set laststatus=2
+set relativenumber
+set undofile
 "make the command line 1 line high
-set cmdheight=1
 set cmdheight=1                 " explicitly set the height of the command line
 set showcmd                     " Show (partial) command in status line.
 set number                      " yay line numbers
@@ -82,10 +96,13 @@ set nobackup
 set noswapfile
 set ruler                       " show current position at bottom
 set noerrorbells                " don't whine
-set visualbell t_vb=            " and don't make faces
+set visualbell                  " and don't make faces
+set cursorline
 set lazyredraw                  " don't redraw while in macros
 set scrolloff=5                 " keep at least 5 lines around the cursor
-set nowrap                        " soft wrap long lines
+set wrap                        " soft wrap long lines
+set textwidth=79
+set colorcolumn=85
 set hidden
 set list                        " show invisible characters
 set listchars=tab:>·,trail:·    " but only show tabs and trailing whitespace
@@ -93,6 +110,7 @@ set report=0                    " report back on all changes
 set shortmess=atI               " shorten messages and don't show intro
 set wildmenu                    " turn on wild menu :e <Tab>
 set wildmode=list:longest       " set wildmenu to list choice
+set tags=./tags;
 if has('syntax')
     syntax on
     " Remember that rxvt-unicode has 88 colors by default; enable this only if
@@ -132,6 +150,13 @@ set formatoptions=tcrql         " t - autowrap to textwidth
                                 " r - autoinsert comment leader with <Enter>
                                 " q - allow formatting of comments with :gq
                                 " l - don't format already long lines
+set gdefault
+nnoremap / /\v
+vnoremap / /\v
+nnoremap <leader><space> :noh<cr>
+nnoremap <tab> %
+vnoremap <tab> %
+
 
 "------ Indents and tabs ------"
 
@@ -140,7 +165,7 @@ set smartindent                 " try to be smart about indenting (C-style)
 set expandtab                   " expand <Tab>s with spaces; death to tabs!
 set shiftwidth=2                " spaces for each step of (auto)indent
 set softtabstop=2               " set virtual tab stop (compat for 8-wide tabs)
-set tabstop=8                   " for proper display of files with tabs
+set tabstop=4                   " for proper display of files with tabs
 set shiftround                  " always round indents to multiple of shiftwidth
 set copyindent                  " use existing indents for new indents
 set preserveindent              " save as much indent structure as possible
@@ -152,6 +177,9 @@ if has('mac')
 endif
 
 "------ Filetypes ------"
+
+au FileType puppet setlocal isk+=;
+au FileType puppet setlocal tabstop=8 expandtab shiftwidth=2 softtabstop=2
 
 " Vimscript
 autocmd FileType vim setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4
@@ -228,3 +256,18 @@ map <leader>t     :CommandT<CR>
 map <leader>b     :BufExplorer<CR>
 map <leader>o     :TlistToggle<CR>
 
+" NERDTreeToggle
+" --------------
+let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:nerdtree_tabs_open_on_console_startup = 0
+" Unfocus NERDTree when leaving a tab for descriptive tab names
+let g:nerdtree_tabs_meaningful_tab_names = 1
+
+" Close current tab if there is only one window in it and it's NERDTree
+let g:nerdtree_tabs_autoclose = 1
+
+" Synchronize view of all NERDTree windows (scroll and cursor position)
+let g:nerdtree_tabs_synchronize_view = 1
+
+au FocusLost * :wa
+nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<CR>
